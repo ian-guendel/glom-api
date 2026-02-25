@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: glom-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: glom_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: gl0m4dmin
+    volumes:
+      - glom_pgdata:/var/lib/postgresql/data:Z
+    ports:
+      - "5432:5432"
+    networks:
+      - glom-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: glom-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@glom.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - glom-net
+
+volumes:
+  glom_pgdata:
+
+networks:
+  glom-net:
+    driver: bridge
